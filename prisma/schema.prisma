@@ -1,0 +1,34 @@
+// SyncSketch Prisma Schema
+// Cold-Storage Persistence & Automated Snapshotting Pipeline
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+  snapshots RoomSnapshot[]
+
+  @@map("rooms")
+}
+
+model RoomSnapshot {
+  id           String   @id @default(uuid())
+  roomId       String   @map("room_id")
+  room         Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  snapshotBlob Bytes    @map("snapshot_blob")
+  version      Int      @default(1)
+  elementCount Int      @default(0) @map("element_count")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([roomId, createdAt(sort: Desc)])
+  @@map("room_snapshots")
+}

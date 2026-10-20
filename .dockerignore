@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.gitignore
+.env*.local
+README.md
+Dockerfile*
+docker-compose*.yml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+server/storage/snapshots/*.bin
+server/storage/snapshots/*.meta.json
+scripts
